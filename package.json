@@ -26,6 +26,8 @@
     "@nestjs/microservices": "^9.2.1",
     "@nestjs/platform-express": "^9.0.0",
     "axios": "^1.2.0",
+    "cache-manager": "^5.1.4",
+    "cache-manager-redis-store": "2.0.0",
     "dotenv": "^16.0.3",
     "reflect-metadata": "^0.1.13",
     "rimraf": "^3.0.2",
