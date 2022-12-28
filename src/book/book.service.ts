@@ -6,17 +6,21 @@ export class BookService {
   constructor(@Inject(CACHE_MANAGER) private readonly cacheManager: Cache) {}
 
   async getForm() {
-    const result = await axios(
-      `${process.env.CONTENTFUL_CONTENT_DELIVERY_BASE_URL}/spaces/${process.env.CONTENTFUL_SPACE_ID}/environments/${process.env.CONTENTFUL_ENVIRONMENT_ID}/entries?sys.id=TyA16n8unGpZ3uuuHHwYA&access_token=${process.env.CONTENTFUL_CONTENT_DELIVERY_TOKEN}`,
-    );
-    // await this.cacheManager.reset();
-    let data = await this.cacheManager.get('book-form-data');
+    const data = await this.getOrSetCache('book/form', async () => {
+      const response = await axios(
+        `${process.env.CONTENTFUL_CONTENT_DELIVERY_BASE_URL}/spaces/${process.env.CONTENTFUL_SPACE_ID}/environments/${process.env.CONTENTFUL_ENVIRONMENT_ID}/entries?sys.id=TyA16n8unGpZ3uuuHHwYA&access_token=${process.env.CONTENTFUL_CONTENT_DELIVERY_TOKEN}`,
+      );
+      return response.data;
+    });
+    return { ...data };
+  }
 
-    if (!data) {
-      console.log(data, 'data');
-      await this.cacheManager.set('book-form-data', result.data, 10);
-      data = await this.cacheManager.get('book-form-data');
-    }
-    return data;
+  async getOrSetCache(key, cb) {
+    const data = await this.cacheManager.get(key);
+    if (data) return data;
+
+    const newData = await cb();
+    await this.cacheManager.set(key, newData);
+    return newData;
   }
 }
