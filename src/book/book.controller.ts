@@ -10,4 +10,9 @@ export class BookController {
   getForm() {
     return this.bookService.getForm();
   }
+
+  @MessagePattern('book/todos')
+  getTodos(id: string) {
+    return this.bookService.getTodos(id);
+  }
 }

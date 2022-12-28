@@ -1,6 +1,7 @@
 import { CACHE_MANAGER, Inject, Injectable } from '@nestjs/common';
 import axios from 'axios';
 import { Cache } from 'cache-manager';
+import { config } from 'dotenv';
 @Injectable()
 export class BookService {
   constructor(@Inject(CACHE_MANAGER) private readonly cacheManager: Cache) {}
@@ -13,6 +14,19 @@ export class BookService {
       return response.data;
     });
     return { ...data };
+  }
+
+  async getTodos(id) {
+    const data = await this.getOrSetCache(`todos:${id}`, async () => {
+      const response = await axios({
+        url: `https://jsonplaceholder.typicode.com/todos/${id}`,
+        headers: {
+          'accept-encoding': '*',
+        },
+      });
+      return response.data;
+    });
+    return data;
   }
 
   async getOrSetCache(key, cb) {
