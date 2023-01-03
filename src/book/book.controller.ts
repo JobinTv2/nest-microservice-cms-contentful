@@ -11,8 +11,8 @@ export class BookController {
     return this.bookService.getForm();
   }
 
-  @MessagePattern('book/todos')
-  getTodos(id: string) {
-    return this.bookService.getTodos(id);
-  }
+  // @MessagePattern('book/todos')
+  // getTodos(id: string) {
+  //   return this.bookService.getTodos(id);
+  // }
 }
