@@ -6,7 +6,7 @@ import * as redisStrore from 'cache-manager-redis-store';
   imports: [
     CacheModule.register({
       store: redisStrore,
-      ttl: 30,
+      ttl: 1,
       socket: { host: 'localhost', port: 6379 },
     }),
   ],
