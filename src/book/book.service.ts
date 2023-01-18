@@ -1,6 +1,12 @@
 import { CACHE_MANAGER, Inject, Injectable } from '@nestjs/common';
 import axios from 'axios';
 import { Cache } from 'cache-manager';
+import Redis from 'ioredis';
+
+const redis = new Redis({
+  port: 6379,
+  host: '127.0.0.1',
+});
 @Injectable()
 export class BookService {
   constructor(@Inject(CACHE_MANAGER) private readonly cacheManager: Cache) {}
@@ -15,7 +21,6 @@ export class BookService {
 
       return response.data;
     });
-    console.log(data);
     return { ...data };
   }
 
@@ -44,7 +49,7 @@ export class BookService {
       error = err;
     }
 
-    if (newData) await this.cacheManager.set(key, newData);
+    if (newData) await redis.setex(key, 20, newData);
     if (!newData) return { error };
     return newData;
   }
